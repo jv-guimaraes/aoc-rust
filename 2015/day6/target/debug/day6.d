@@ -1,0 +1,1 @@
+C:\Users\jv\dev\rust\AoC\2015\day6\target\debug\day6.exe: C:\Users\jv\dev\rust\AoC\2015\day6\src\cord.rs C:\Users\jv\dev\rust\AoC\2015\day6\src\main.rs C:\Users\jv\dev\rust\AoC\2015\day6\src\p1.rs C:\Users\jv\dev\rust\AoC\2015\day6\src\p2.rs

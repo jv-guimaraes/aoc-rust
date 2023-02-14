@@ -25,54 +25,33 @@ fn value_of(commands: &str, identifier: &str) -> u16 {
         if *tokens.last().unwrap() != identifier { continue; }
         
         if tokens.len() == 3 {
-            if let Ok(num) = tokens[0].parse::<u16>() {
-                insert_into_dict(identifier, num);
-                return num;
-            } else {
-                return value_of(commands, tokens[0])
-            }
+            let a = tokens[0].parse().unwrap_or_else(|_| value_of(commands, tokens[0]));
+            insert_into_dict(identifier, a);
+            return  a;
         }
+
         else if tokens.len() == 4  { // NOT
-            let operand = tokens[1];
-            if let Ok(num) = operand.parse::<u16>() {
-                insert_into_dict(identifier, !num);
-                return !num;
-            } else {
-                return !value_of(commands, operand)
-            }
+            let a = tokens[1];
+            let a = !a.parse().unwrap_or_else(|_| value_of(commands, a));
+            insert_into_dict(identifier, a);
+            return a;
         }
 
         let operator = tokens[1];
         let (a, b) = (tokens[0], tokens[2]);
+        let a = a.parse().unwrap_or_else(|_| value_of(commands, a));
+        let b = b.parse().unwrap_or_else(|_| value_of(commands, b));
+        
+        let value = match operator {
+            "AND" => a & b,
+            "OR" => a | b,
+            "LSHIFT" => a << b,
+            "RSHIFT" => a >> b,
+            op => panic!("Invalid operator: {op}"),
+        };
 
-        if operator == "AND" {
-            let a = a.parse().unwrap_or_else(|_| value_of(commands, a));
-            let b = b.parse().unwrap_or_else(|_| value_of(commands, b));
-            insert_into_dict(identifier, a & b);
-            return a & b;
-        }
-        else if operator == "OR" {
-            let a = a.parse().unwrap_or_else(|_| value_of(commands, a));
-            let b = b.parse().unwrap_or_else(|_| value_of(commands, b));
-            insert_into_dict(identifier, a | b);
-            return a | b;
-        }
-        else if operator == "LSHIFT" {
-            if let ( Ok(a), Ok(b) ) = ( a.parse::<u16>(), b.parse::<u16>() ) {
-                insert_into_dict(identifier, a << b);
-                return a << b;
-            } else {
-                return value_of(commands, a) << b.parse::<u16>().unwrap();
-            }
-        }
-        else { // RSHIFT
-            if let ( Ok(a), Ok(b) ) = ( a.parse::<u16>(), a.parse::<u16>() ) {
-                insert_into_dict(identifier, a >> b);
-                return a >> b;
-            } else {
-                return value_of(commands, a) >> b.parse::<u16>().unwrap();
-            }
-        }
+        insert_into_dict(identifier, value);
+        return value;
     }
     
     panic!("Yabe!");
@@ -99,5 +78,3 @@ fn main() {
     DICT.lock().unwrap().insert("b".to_owned(), 956);
     println!("Solution 2: {}", value_of(commands, "a"));
 }
-
-

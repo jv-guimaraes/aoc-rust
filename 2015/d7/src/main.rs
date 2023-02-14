@@ -95,7 +95,10 @@ fn _test() {
 fn main() {
     let commands = include_str!("..\\input.txt");
     dbg!(value_of(commands, "a"));
-    // _test();
+    DICT.lock().unwrap().clear();
+    
+    let commands2 = commands.replace("14146", "956");
+    dbg!(value_of(&commands2, "a"));
 }
 
 

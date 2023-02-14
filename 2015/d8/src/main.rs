@@ -1,12 +1,10 @@
-#![allow(unused)]
-
 use lazy_static::lazy_static;
 use regex::Regex;
 
 fn main() {
     let input: &str = include_str!("..\\input.txt");
     let char_count = input.lines().map(|l| l.len()).sum::<usize>();
-    let byte_count = input.lines().map(count_bytes).sum::<usize>();;
+    let byte_count = input.lines().map(count_bytes).sum::<usize>();
     println!("{} - {} = {}", char_count, byte_count, char_count - byte_count);
 }
 

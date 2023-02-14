@@ -93,11 +93,11 @@ fn _test() {
 
 fn main() {
     let commands = include_str!("..\\input.txt");
-    dbg!(value_of(commands, "a"));
+    println!("Solution 1: {}", value_of(commands, "a"));
     
     DICT.lock().unwrap().clear();
     DICT.lock().unwrap().insert("b".to_owned(), 956);
-    dbg!(value_of(commands, "a"));
+    println!("Solution 2: {}", value_of(commands, "a"));
 }
 
 

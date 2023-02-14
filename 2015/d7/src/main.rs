@@ -57,19 +57,6 @@ fn value_of(commands: &str, identifier: &str) -> u16 {
     panic!("Yabe!");
 }
 
-fn _test() {
-    let input = include_str!("..\\test_input.txt");
-    dbg!(value_of(input, "k"));
-    dbg!(value_of(input, "d"));
-    dbg!(value_of(input, "e"));
-    dbg!(value_of(input, "f"));
-    dbg!(value_of(input, "g"));
-    dbg!(value_of(input, "h"));
-    dbg!(value_of(input, "i"));
-    dbg!(value_of(input, "x"));
-    dbg!(value_of(input, "y"));
-}
-
 fn main() {
     let commands = include_str!("..\\input.txt");
     println!("Solution 1: {}", value_of(commands, "a"));

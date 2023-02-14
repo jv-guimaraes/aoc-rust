@@ -44,7 +44,7 @@ fn value_of(commands: &str, identifier: &str) -> u16 {
 
         let operator = tokens[1];
         let (a, b) = (tokens[0], tokens[2]);
-        
+
         if operator == "AND" {
             let a = a.parse().unwrap_or_else(|_| value_of(commands, a));
             let b = b.parse().unwrap_or_else(|_| value_of(commands, b));
@@ -79,7 +79,7 @@ fn value_of(commands: &str, identifier: &str) -> u16 {
 }
 
 fn _test() {
-    let input = include_str!("..\\smaller_input.txt");
+    let input = include_str!("..\\test_input.txt");
     dbg!(value_of(input, "k"));
     dbg!(value_of(input, "d"));
     dbg!(value_of(input, "e"));
@@ -94,10 +94,10 @@ fn _test() {
 fn main() {
     let commands = include_str!("..\\input.txt");
     dbg!(value_of(commands, "a"));
-    DICT.lock().unwrap().clear();
     
-    let commands2 = commands.replace("14146", "956");
-    dbg!(value_of(&commands2, "a"));
+    DICT.lock().unwrap().clear();
+    DICT.lock().unwrap().insert("b".to_owned(), 956);
+    dbg!(value_of(commands, "a"));
 }
 
 

@@ -1,5 +1,3 @@
-#![allow(unused)]
-
 use lazy_static::lazy_static;
 use regex::Regex;
 
@@ -16,16 +14,13 @@ fn main() {
 
 fn count_bytes(s: &str) -> usize {
     lazy_static! {
-        static ref RE1: Regex = Regex::new(r"\\\\").unwrap();
-        static ref RE2: Regex = Regex::new(r#"\\""#).unwrap();
-        static ref RE3: Regex = Regex::new(r#"\\x.."#).unwrap();
+        static ref RE: Regex = Regex::new(r#"\\x.."#).unwrap();
     }
 
     let s = &s[1..s.len()-1];
-    let s = RE1.replace_all(s, "0");
-    let s = RE2.replace_all(&s, "0");
-    let s = RE3.replace_all(&s, "0");
-    // println!("{} ==> {}", s, &res);
+    let s = s.replace("\\\\", "0");
+    let s = s.replace("\\\"", "0");
+    let s = RE.replace_all(&s, "0");
 
     s.len()
 }

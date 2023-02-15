@@ -1,4 +1,4 @@
-// #![allow(unused)]
+#![allow(unused)]
 
 use std::collections::{BTreeSet, HashMap};
 
@@ -6,7 +6,8 @@ use petgraph::{
     graph::{Graph},
     Undirected,
     algo::dijkstra,
-    prelude::NodeIndex,
+    graphmap::NeighborsDirected, stable_graph::node_index,
+    prelude::*,
 };
 
 fn load_graph<'a>() -> Graph<&'a str, i32, Undirected> {
@@ -50,7 +51,7 @@ fn shortest_path(graph: &Graph<&str, i32, Undirected>, start: NodeIndex) -> i32 
 
         let mut next_node = search.iter().next().unwrap();
         for entry in search.iter() {
-            if entry.1 > next_node.1 {
+            if entry.1 < next_node.1 {
                 next_node = entry;
             }
         }
@@ -63,12 +64,34 @@ fn shortest_path(graph: &Graph<&str, i32, Undirected>, start: NodeIndex) -> i32 
     total
 }
 
+fn longest_path(graph: &Graph<&str, i32, Undirected>, start: NodeIndex) -> i32 {
+    let mut unvisited = BTreeSet::from_iter(graph.node_indices());
+    unvisited.remove(&start);
+    let mut current_node = start;
+
+    // Loop
+    let mut total = 0;
+    while !unvisited.is_empty() {
+        // println!("{:?}", unvisited);
+        let edges = graph.edges(current_node).filter(|e| unvisited.contains(&e.target()));
+        // println!("{:?}", edges.clone().map(|e| (e.target().index(), e.weight())).collect::<Vec<_>>());
+        let next_edge = edges.max_by_key(|e| e.weight()).unwrap();
+        total += next_edge.weight();
+        let next_node = next_edge.target();
+        // println!("next: {:?}", next_node.index());
+        unvisited.remove(&next_node);
+        current_node = next_node;
+    }
+    total
+}
+
 fn main() {
     let graph = load_graph();
     // println!("{:?}\n", graph);
 
-    for node in graph.node_indices() {
-        print!("{}({}): ", graph[node], node.index());
-        println!("{:?}", shortest_path(&graph, node));
-    }
+    // part 1
+    println!("Part 1: {:?}", graph.node_indices().map(|i| shortest_path(&graph, i)).min().unwrap());
+
+    // part 2
+    println!("Part 2: {:?}", graph.node_indices().map(|i| longest_path(&graph, i)).max().unwrap());
 }

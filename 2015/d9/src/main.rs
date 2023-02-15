@@ -1,12 +1,9 @@
-#![allow(unused)]
-
 use std::collections::{BTreeSet, HashMap};
 
 use petgraph::{
     graph::{Graph},
     Undirected,
     algo::dijkstra,
-    graphmap::NeighborsDirected, stable_graph::node_index,
     prelude::*,
 };
 

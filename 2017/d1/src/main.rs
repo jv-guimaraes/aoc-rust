@@ -1,5 +1,3 @@
-#![allow(unused)]
-
 fn main() {
     let input = include_str!("..\\input.txt");
     let digits = input.bytes().map(|b| (b as char).to_digit(10).unwrap()).collect::<Vec<_>>();

@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use point::{Point, point};
 
 const INPUT: u32 = 347991;
+type Grid = HashMap<Point, u32>;
 
 fn part1() {
     for (i, j) in (3..).step_by(2).zip(1..) {
@@ -28,7 +29,7 @@ fn part1() {
     }
 }
 
-fn print_grid(grid: &HashMap<Point, u32>, size: i32) {
+fn print_grid(grid: &Grid, size: i32) {
     for i in -size+1..size {
         for j in -size+1..size {
             print!("{:^7} ", grid.get(&point(j, -i)).unwrap());
@@ -37,8 +38,8 @@ fn print_grid(grid: &HashMap<Point, u32>, size: i32) {
     }
 }
 
-fn build_grid(size: i32) -> HashMap<Point, u32> {
-    let mut grid: HashMap<Point, u32> = HashMap::new();
+fn build_grid(size: i32) -> Grid {
+    let mut grid: Grid = HashMap::new();
     for i in -size+1..size {
         for j in -size+1..size {
             grid.insert(point(i, j), 0);
@@ -48,7 +49,7 @@ fn build_grid(size: i32) -> HashMap<Point, u32> {
     grid
 }
 
-fn sum(grid: &HashMap<Point, u32>, pos: Point) -> u32 {
+fn sum(grid: &Grid, pos: Point) -> u32 {
     let mut sum = 0;
     sum += grid.get(&pos.add(point(1, 0))).unwrap();
     sum += grid.get(&pos.add(point(-1, 0))).unwrap();

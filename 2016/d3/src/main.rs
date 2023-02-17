@@ -1,3 +1,10 @@
+fn is_valid_triangle(triangle: &[i32]) -> bool {
+    if triangle[0] >= triangle[1] + triangle[2] { return false; }
+    if triangle[1] >= triangle[0] + triangle[2] { return false; }
+    if triangle[2] >= triangle[0] + triangle[1] { return false; }
+    true
+}
+
 fn part1(input: &str) {
     let mut valid_triangles = 0;
     for triangle in input.lines() {
@@ -6,11 +13,9 @@ fn part1(input: &str) {
             .map(|s| s.parse().unwrap())
             .collect();
 
-        if sides[0] >= sides[1] + sides[2] { continue; }
-        if sides[1] >= sides[0] + sides[2] { continue; }
-        if sides[2] >= sides[0] + sides[1] { continue; }
-
-        valid_triangles += 1;
+            if is_valid_triangle(&sides) {
+                valid_triangles += 1;
+            } 
     }
     println!("Part 1: {valid_triangles}");
 }
@@ -21,13 +26,10 @@ fn part2(input: &str) {
     
     for i in (0..input.len()).step_by(9) {
         for j in 0..3 {
-            let sides = [input[i+j], input[i+3+j], input[i+6+j]];
-    
-            if sides[0] >= sides[1] + sides[2] { continue; }
-            if sides[1] >= sides[0] + sides[2] { continue; }
-            if sides[2] >= sides[0] + sides[1] { continue; }
-    
-            valid_triangles += 1;
+            let sides = vec![input[i+j], input[i+3+j], input[i+6+j]];
+            if is_valid_triangle(&sides) {
+                valid_triangles += 1;
+            } 
         }
     }
     

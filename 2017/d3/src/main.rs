@@ -1,4 +1,8 @@
-#![allow(unused)]
+mod point;
+
+use std::collections::HashMap;
+
+use point::{Point, point};
 
 const INPUT: u32 = 347991;
 
@@ -24,6 +28,64 @@ fn part1() {
     }
 }
 
+fn print_grid(grid: &HashMap<Point, u32>, size: i32) {
+    for i in -size+1..size {
+        for j in -size+1..size {
+            print!("{:^7} ", grid.get(&point(j, -i)).unwrap());
+        }
+        println!();
+    }
+}
+
+fn build_grid(size: i32) -> HashMap<Point, u32> {
+    let mut grid: HashMap<Point, u32> = HashMap::new();
+    for i in -size+1..size {
+        for j in -size+1..size {
+            grid.insert(point(i, j), 0);
+        }
+    }
+    grid.insert(point(0, 0), 1);
+    grid
+}
+
+fn sum(grid: &HashMap<Point, u32>, pos: Point) -> u32 {
+    let mut sum = 0;
+    sum += grid.get(&pos.add(point(1, 0))).unwrap();
+    sum += grid.get(&pos.add(point(-1, 0))).unwrap();
+    sum += grid.get(&pos.add(point(0, 1))).unwrap();
+    sum += grid.get(&pos.add(point(0, -1))).unwrap();
+    sum += grid.get(&pos.add(point(1, 1))).unwrap();
+    sum += grid.get(&pos.add(point(-1, -1))).unwrap();
+    sum += grid.get(&pos.add(point(-1, 1))).unwrap();
+    sum += grid.get(&pos.add(point(1, -1))).unwrap();
+    sum
+}
+
+fn part2() {
+    let size = 6;
+    let mut grid = build_grid(size);
+
+    let mut pos = point(0, 0);
+    let mut sign = 1;
+    for i in 1..9 {
+        for _ in 0..i {
+            pos.x += sign;
+            let num = sum(&grid, pos);
+            grid.insert(pos, num);
+        }
+        for _ in 0..i {
+            pos.y += sign;
+            let num = sum(&grid, pos);
+            grid.insert(pos, num);
+        }
+        sign *= -1;
+    }
+
+    println!("Part 2: \n");
+    print_grid(&grid, size);
+}
+
 fn main() {
     part1();
+    part2();
 }

@@ -16,10 +16,12 @@ fn part2() {
     let mut frequencies: HashSet<i32> = HashSet::new();
     frequencies.insert(0);
     let mut total = 0;
-    for num in INPUT.split_ascii_whitespace().cycle() {
-        let num = num.parse::<i32>().unwrap();
+    for num in INPUT
+        .split_ascii_whitespace()
+        .map(|n| n.parse::<i32>().unwrap())
+        .cycle()
+    {
         total += num;
-        // println!("Total: {}", total);
         if !frequencies.insert(total) {
             println!("Part 2: {}", total);
             return;

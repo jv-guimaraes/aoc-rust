@@ -1,5 +1,3 @@
-#![allow(unused)]
-
 const INPUT: &str = include_str!("..\\input.txt");
 
 fn calculate_fuel(x: i32, acc: i32) -> i32 {

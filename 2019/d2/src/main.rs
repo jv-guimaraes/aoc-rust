@@ -1,5 +1,3 @@
-#![allow(unused)]
-
 const INPUT: &str = include_str!("..\\input.txt");
 
 fn load_code(noun: usize, verb: usize) -> Vec<usize> {
@@ -44,8 +42,8 @@ fn part1() {
 }
 
 fn part2() {
-    for noun in (0..=99) {
-        for verb in (0..=99) {
+    for noun in 0..=99 {
+        for verb in 0..=99 {
             if run_with_input(noun, verb) == 19690720 {
                 println!("Part 2: {}", 100 * noun + verb);
             }

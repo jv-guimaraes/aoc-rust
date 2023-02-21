@@ -15,7 +15,7 @@ fn part1(entries: &[u32]) {
 fn part2(entries: &[u32]) {
     for (e1, e2, e3) in entries.iter().tuple_combinations() {
         if e1 + e2 + e3 == 2020 {
-            println!("Part 1: {} * {} * {} = {}", e1, e2, e3, e1 * e2 * e3);
+            println!("Part 2: {} * {} * {} = {}", e1, e2, e3, e1 * e2 * e3);
             return;
         }      
     }

@@ -1,15 +1,20 @@
-// #![allow(unused)]
+use std::{
+    collections::HashMap,
+    fmt::{Debug, Display},
+};
 
-use std::{collections::HashMap, fmt::{Debug, Display}};
-
-use regex::Regex;
 use lazy_static::lazy_static;
+use regex::Regex;
 
 const INPUT: &str = include_str!("..\\input.txt");
-// const INPUT: &str = include_str!("..\\sample.txt");
+
+const ALPHABET: [char; 26] = [
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+    't', 'u', 'v', 'w', 'x', 'y', 'z',
+];
 
 #[derive(Debug)]
-struct Room<'a> {   
+struct Room<'a> {
     name: &'a str,
     id: u32,
     checksum: &'a str,
@@ -17,7 +22,7 @@ struct Room<'a> {
 
 impl Display for Room<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}|{}|{} {:?}",  self.name, self.id, self.checksum, self.is_real())
+        write!(f, "{}|{}|{} {:?}", self.name, self.id, self.checksum, self.is_real())
     }
 }
 
@@ -30,7 +35,12 @@ impl Room<'_> {
         }
         let name = NAME_RE.find(text).unwrap().as_str();
         let id = ID_RE.find(text).unwrap().as_str().parse().unwrap();
-        let checksum = CHECKSUM_RE.find(text).unwrap().as_str().strip_suffix(']').unwrap();
+        let checksum = CHECKSUM_RE
+            .find(text)
+            .unwrap()
+            .as_str()
+            .strip_suffix(']')
+            .unwrap();
         Room { name, id, checksum }
     }
 
@@ -50,10 +60,30 @@ impl Room<'_> {
         let checksum: Vec<char> = self.checksum.chars().collect();
         vetor == checksum
     }
+
+    fn decrypt(&self) -> String {
+        let mut result = String::new();
+        for byte in self.name.bytes() {
+            if (byte as char) == '-' {
+                result.push(' ');
+                continue;
+            }
+            let index = ((byte - 97) as usize + self.id as usize) % 26;
+            let decrypted_char = ALPHABET[index];
+            result.push(decrypted_char);
+        }
+        result
+    }
 }
 
-fn main()  {
-    let rooms = INPUT.lines().map(Room::from_str);
-    let result: u32 = rooms.filter(|r| r.is_real()).fold(0, |acc, x| acc + x.id);
-    println!("{result}");
+fn main() {
+    // Part 1
+    let rooms: Vec<Room> = INPUT.lines().map(Room::from_str).collect();
+    let checksum: u32 = rooms.iter().filter(|r| r.is_real()).fold(0, |acc, x| acc + x.id);
+    println!("Part 1: {checksum}");
+
+    // Part 2
+    let valid_rooms: Vec<&Room> = rooms.iter().filter(|r| r.is_real()).collect();
+    let northpole_room = valid_rooms.iter().find(|x| x.decrypt().contains("northpole")).unwrap();
+    println!("Part 2: {}", northpole_room.id);
 }

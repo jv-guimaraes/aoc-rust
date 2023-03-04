@@ -5,6 +5,7 @@ use std::{
 
 use lazy_static::lazy_static;
 use regex::Regex;
+use itertools::*;
 
 const INPUT: &str = include_str!("..\\input.txt");
 
@@ -44,12 +45,8 @@ impl Room<'_> {
         Room { name, id, checksum }
     }
 
-    fn letter_count(&self) -> HashMap<char, u32> {
-        let mut counter: HashMap<char, u32> = HashMap::new();
-        for c in self.name.chars().filter(|c| c.is_ascii_lowercase()) {
-            counter.entry(c).and_modify(|e| *e += 1).or_insert(1);
-        }
-        counter
+    fn letter_count(&self) -> HashMap<char, usize> {
+        self.name.chars().filter(|c| c.is_ascii_lowercase()).counts()
     }
 
     fn is_real(&self) -> bool {

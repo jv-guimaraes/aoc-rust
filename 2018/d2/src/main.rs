@@ -1,12 +1,9 @@
-use std::collections::HashMap;
+use itertools::*;
 
 const INPUT: &str = include_str!("..\\input.txt");
 
-fn contains_repeated_char(line: &str, times: i32) -> bool {
-    let mut dict: HashMap<char, i32> = HashMap::new();
-    for char in line.chars() {
-        dict.entry(char).and_modify(|c| *c += 1).or_insert(1);
-    }
+fn contains_repeated_char(line: &str, times: usize) -> bool {
+    let dict = line.chars().counts();
     dict.into_values().any(|count| count == times)
 }
 

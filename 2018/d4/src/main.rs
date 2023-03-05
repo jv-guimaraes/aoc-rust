@@ -1,4 +1,3 @@
-// #![allow(unused)]
 #![allow(clippy::needless_range_loop)]
 #![feature(slice_group_by)]
 
@@ -39,14 +38,13 @@ impl Debug for Mind {
 
 #[derive(Debug)]
 struct Day {
-    day: String,
     id: u32,
     minutes: [Mind; 60],
 }
 
 impl Day {
-    fn new(day: String, id: u32) -> Day {
-        Day { day, id, minutes: [Mind::Awake; 60] }
+    fn new(id: u32) -> Day {
+        Day { id, minutes: [Mind::Awake; 60] }
     }
 
     fn total_sleep(&self) -> u32 {
@@ -55,21 +53,13 @@ impl Day {
             .filter(|x| **x == Mind::Sleeping)
             .count() as u32
     }
-
-    fn minutes_to_str(&self) -> String{
-        let mut res = String::new();
-        for minute in self.minutes {
-            res.push_str(&format!("{:?}", minute));
-        }
-        res
-    }
 }
 
 fn calculate_days(logs: &[Log]) -> Vec<Day> {
     let mut days: Vec<Day> = Vec::new();
     // First pass
     for days_log in logs.group_by(|a, b| a.day == b.day) {
-        let mut day = Day::new(days_log[0].day.to_owned(), days_log[0].action.id());
+        let mut day = Day::new(days_log[0].action.id());
         for log in days_log {
             match log.action {
                 Action::BeginShift(_) => (),
@@ -117,6 +107,29 @@ fn part1() {
     println!("Part 1: {} x {} = {}", id, sleepiest_minute, id * sleepiest_minute as u32);
 }
 
+fn part2() {
+    let logs = INPUT.lines().map(Log::new).collect_vec();
+    let days = calculate_days(&logs);
+    let mut days_by_id: HashMap<u32, Vec<&Day>> = HashMap::new();
+    for day in days.iter() {
+        days_by_id.entry(day.id).and_modify(|x| x.push(day)).or_insert(vec![day]);
+    }
+    let mut records: Vec<(u32, (usize, i32))> = Vec::new();
+    for id in days_by_id.keys() {
+        let mut minute_sum = [0; 60];
+        for day in days_by_id.get(id).unwrap() {
+            for i in 0..60 {
+                minute_sum[i] += if day.minutes[i] == Mind::Sleeping { 1 } else { 0 };
+            }
+        }
+        let sleepiest_minute = minute_sum.iter().enumerate().max_by_key(|x| x.1).unwrap();
+        records.push((*id, (sleepiest_minute.0, *sleepiest_minute.1)));
+    }
+    let solution = records.into_iter().max_by_key(|x| x.1.1).unwrap();
+    println!("Part 2: {:?}", solution.0 * solution.1.0 as u32);
+}
+
 fn main() {
-    part1()
+    part1();
+    part2();
 }

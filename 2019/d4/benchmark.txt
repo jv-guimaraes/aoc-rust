@@ -1,0 +1,16 @@
+Benchmark 1: target\release\d4.exe
+  Time (mean ± σ):     161.7 ms ±  19.7 ms    [User: 139.0 ms, System: 23.1 ms]
+  Range (min … max):   125.6 ms … 196.2 ms    16 runs
+ 
+Benchmark 2: pypy main_no_itertools.py
+  Time (mean ± σ):     188.5 ms ±  16.6 ms    [User: 152.3 ms, System: 39.8 ms]
+  Range (min … max):   167.2 ms … 214.1 ms    14 runs
+ 
+Benchmark 3: py main.py
+  Time (mean ± σ):     756.7 ms ±  74.1 ms    [User: 700.9 ms, System: 40.0 ms]
+  Range (min … max):   670.9 ms … 874.0 ms    10 runs
+ 
+Summary
+  'target\release\d4.exe' ran
+    1.17 ± 0.18 times faster than 'pypy main_no_itertools.py'
+    4.68 ± 0.73 times faster than 'py main.py'

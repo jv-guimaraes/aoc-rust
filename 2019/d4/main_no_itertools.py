@@ -1,23 +1,21 @@
-from itertools import pairwise
-
 RANGE = range(271973, 785961)
 
 def is_valid(password: int) -> bool:
     bytes = str(password)
 
-    for x in pairwise(bytes):
-        if x[0] > x[1]: return False
+    for i in range(len(bytes)-1):
+        if bytes[i] > bytes[i+1]: return False
     
-    for x in pairwise(bytes):
-        if x[0] == x[1]: return True
+    for i in range(len(bytes)-1):
+        if bytes[i] == bytes[i+1]: return True
 
     return False
 
 def is_valid2(password: int) -> bool:
     b = str(password)
 
-    for x in pairwise(b):
-        if x[0] > x[1]: return False
+    for i in range(len(b)-1):
+        if b[i] > b[i+1]: return False
 
     if b[0] == b[1] and b[1] != b[2]: return True
     if b[1] == b[2] and b[1] != b[0] and b[1] != b[3]: return True

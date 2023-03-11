@@ -1,8 +1,10 @@
-#![allow(unused)]
-#![allow(clippy::needless_range_loop)]
 use itertools::Itertools;
 
 const INPUT: &str = include_str!("..\\input.txt");
+
+fn find_closing_parentheses(chars: &[char], opening_ix: usize) -> Option<usize> {
+    ((opening_ix+1)..).find(|&j| chars[j] == ')')
+}
 
 fn decompress(text: &str) -> String {
     let mut result = String::new();
@@ -18,15 +20,9 @@ fn decompress(text: &str) -> String {
         }
         
         // Find closing parentheses
-        let mut closing_parentheses_ix = 0;
-        for j in (i+1).. {
-            if chars[j] == ')' {
-                closing_parentheses_ix = j;
-                break;
-            }
-        }
+        let closing_parentheses_ix = find_closing_parentheses(&chars, i).unwrap();
 
-        // Calculate marker and sequence range and times to repeat (1x3)
+        // Calculate sequence size and range and the times to repeat
         let marker = &text[i+1..closing_parentheses_ix];
         let range_size: usize = marker.split('x').next().unwrap().parse().unwrap();
         let range = (closing_parentheses_ix+1)..(closing_parentheses_ix+1+range_size);
@@ -43,8 +39,51 @@ fn decompress(text: &str) -> String {
     result
 }
 
+fn deep_decompress(text: &str) -> usize {
+    let mut total = 0;
+    let chars = text.chars().collect_vec();
+
+    let mut i = 0;
+    while i < chars.len() {
+        if chars[i] != '(' {
+            i += 1;
+            total += 1;
+            continue;
+        }
+
+        // Find closing parentheses
+        let closing_parentheses_ix = find_closing_parentheses(&chars, i).unwrap();
+
+        // Calculate sequence size and range and the times to repeat
+        let marker = &text[i+1..closing_parentheses_ix];
+        let range_size: usize = marker.split('x').next().unwrap().parse().unwrap();
+        let range = (closing_parentheses_ix+1)..(closing_parentheses_ix+1+range_size);
+        let times: usize  = marker.split('x').nth(1).unwrap().parse().unwrap();
+
+        total += times * deep_decompress(&text[range.clone()]);
+
+        // Calculate the next i
+        i = closing_parentheses_ix + 1 + range_size;
+    }
+
+    total
+}
+
 fn main()  {
     println!("Part 1: {}", decompress(INPUT.trim()).len());
+    println!("Part 2: {}", deep_decompress(INPUT.trim()));
+}
+
+#[test]
+fn deep_no_compression_sequence_test() {
+    assert_eq!("ADVENT".len(), deep_decompress("ADVENT"));
+}
+
+#[test]
+fn deep_compression_test() {
+    assert_eq!(deep_decompress("X(8x2)(3x3)ABCY"), "XABCABCABCABCABCABCY".len());
+    assert_eq!(deep_decompress("(27x12)(20x12)(13x14)(7x10)(1x12)A"), 241920);
+    assert_eq!(deep_decompress("(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN"), 445);
 }
 
 #[test]
